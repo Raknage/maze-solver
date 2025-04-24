@@ -1,21 +1,25 @@
 from window import Window, Point, Line, Cell
+from maze import Maze
 
 
 def main():
+    start = (100, 100)
+    cell_size = (20, 20)
     win = Window(800, 600)
-    cell1 = Cell(win)
-    cell2 = Cell(win)
-    cell3 = Cell(win)
-    cell1.has_right_wall = False
-    cell2.has_left_wall = False
-    cell2.has_bottom_wall = False
-    cell3.has_top_wall = False
-    cell1.draw(Point(10, 10), Point(30, 30))
-    cell2.draw(Point(30, 10), Point(50, 30))
-    cell3.draw(Point(30, 30), Point(50, 50))
-    cell1.draw_move(cell2)
-    cell2.draw_move(cell3, True)
+    win.redraw()
+    max_size = count_max_size(win, *start, *cell_size)
+    Maze(*start, *max_size, *cell_size, win)
     win.wait_for_close()
+
+
+def count_max_size(
+    win: Window, x1: int, y1: int, cell_size_x: int, cell_size_y: int
+) -> tuple[int]:
+    width = win.canvas.winfo_width()
+    height = win.canvas.winfo_height()
+    x: int = (width - x1 * 2) // cell_size_x
+    y: int = (height - y1 * 2) // cell_size_y
+    return (y, x)
 
 
 main()
