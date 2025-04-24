@@ -1,10 +1,11 @@
 from tkinter import Tk, BOTH, Canvas
+from __future__ import annotations
 
 
 class Window:
-    def __init__(self, width, height):
+    def __init__(self, width: int, height: int):
         self.root = Tk()
-        self.root.title = "Maze Solver"
+        self.root.title("Maze Solver")
         self.root.protocol("WM_DELETE_WINDOW", self.close)
         self.canvas = Canvas(self.root, width=width, height=height, background="gray75")
         self.canvas.pack(fill=BOTH, expand=True)
@@ -22,22 +23,22 @@ class Window:
     def close(self):
         self.running = False
 
-    def draw_line(self, line, fill_color="black"):
+    def draw_line(self, line: Line, fill_color="black"):
         line.draw(self.canvas, fill_color)
 
 
 class Point:
-    def __init__(self, x, y):
+    def __init__(self, x: int, y: int):
         self.x = x
         self.y = y
 
 
 class Line:
-    def __init__(self, start, end):
+    def __init__(self, start: Point, end: Point):
         self.start = start
         self.end = end
 
-    def draw(self, canvas, fill_color):
+    def draw(self, canvas: Canvas, fill_color: str):
         canvas.create_line(
             self.start.x,
             self.start.y,
@@ -49,7 +50,7 @@ class Line:
 
 
 class Cell:
-    def __init__(self, window):
+    def __init__(self, window: Window):
         self.has_left_wall = True
         self.has_right_wall = True
         self.has_top_wall = True
@@ -60,7 +61,7 @@ class Cell:
         self.x1 = None
         self.y1 = None
 
-    def draw(self, top_left, bottom_right):
+    def draw(self, top_left: Point, bottom_right: Point):
         self.x0 = top_left.x
         self.y0 = top_left.y
         self.x1 = bottom_right.x
