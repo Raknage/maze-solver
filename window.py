@@ -1,5 +1,5 @@
-from tkinter import Tk, BOTH, Canvas
 from __future__ import annotations
+from tkinter import Tk, BOTH, Canvas
 
 
 class Window:
@@ -56,16 +56,18 @@ class Cell:
         self.has_top_wall = True
         self.has_bottom_wall = True
         self.window = window
-        self.x0 = None
-        self.y0 = None
-        self.x1 = None
-        self.y1 = None
+        self.x0: int = None
+        self.y0: int = None
+        self.x1: int = None
+        self.y1: int = None
+        self.center: Point = None
 
     def draw(self, top_left: Point, bottom_right: Point):
         self.x0 = top_left.x
         self.y0 = top_left.y
         self.x1 = bottom_right.x
         self.y1 = bottom_right.y
+        self.center = Point((self.x0 + self.x1) / 2, (self.y0 + self.y1) / 2)
 
         if self.has_left_wall:
             left_wall = Line(Point(self.x0, self.y0), Point(self.x0, self.y1))
@@ -79,3 +81,10 @@ class Cell:
         if self.has_bottom_wall:
             bottom_wall = Line(Point(self.x0, self.y1), Point(self.x1, self.y1))
             self.window.draw_line(bottom_wall)
+
+    def draw_move(self, to_cell: Cell, undo=False):
+        color = "red"
+        if undo:
+            color = "gray"
+        line = Line(self.center, to_cell.center)
+        self.window.draw_line(line, color)
