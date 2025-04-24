@@ -7,7 +7,7 @@ def main():
     cell_size = (20, 20)
     win = Window(800, 600)
     win.redraw()
-    max_size = count_max_size(win, *start, *cell_size)
+    max_size = (5, 10) #count_max_size(win, *start, *cell_size)
     Maze(*start, *max_size, *cell_size, win)
     win.wait_for_close()
 
