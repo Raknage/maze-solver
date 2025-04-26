@@ -1,6 +1,7 @@
-from window import Window, Cell, Point
 import time
 import random
+from window import Window, Point
+from cell import Cell
 
 
 class Maze:
@@ -15,80 +16,80 @@ class Maze:
         win: Window = None,
         seed: int = None,
     ):
-        self.x1 = x1
-        self.y1 = y1
-        self.num_rows = num_rows
-        self.num_cols = num_cols
-        self.cell_size_x = cell_size_x
-        self.cell_size_y = cell_size_y
-        self.win = win
-        self.cells: list[list[Cell]] = []
+        self._x1 = x1
+        self._y1 = y1
+        self._num_rows = num_rows
+        self._num_cols = num_cols
+        self._cell_size_x = cell_size_x
+        self._cell_size_y = cell_size_y
+        self._win = win
+        self._cells: list[list[Cell]] = []
         random.seed(seed)
-        self.create_cells()
-        if self.win:
-            self.break_entrance_and_exit()
-            self.break_walls_r(0, 0)
-            self.reset_cells_visited()
+        self._create_cells()
+        if self._win:
+            self._break_entrance_and_exit()
+            self._break_walls_r(0, 0)
+            self._reset_cells_visited()
 
-    def create_cells(self):
-        for x in range(self.num_cols):
-            self.cells.append([])
-            for y in range(self.num_rows):
-                self.cells[x].append(Cell(self.win))
+    def _create_cells(self):
+        for x in range(self._num_cols):
+            self._cells.append([])
+            for y in range(self._num_rows):
+                self._cells[x].append(Cell(self._win))
 
-        for y in range(self.num_rows):
-            for x in range(self.num_cols):
-                self.draw_cell(x, y)
+        for y in range(self._num_rows):
+            for x in range(self._num_cols):
+                self._draw_cell(x, y)
 
-    def draw_cell(self, x: int, y: int):
-        p1 = Point(self.x1 + self.cell_size_x * x, self.y1 + self.cell_size_y * y)
+    def _draw_cell(self, x: int, y: int):
+        p1 = Point(self._x1 + self._cell_size_x * x, self._y1 + self._cell_size_y * y)
         p2 = Point(
-            self.x1 + self.cell_size_x + self.cell_size_x * x,
-            self.y1 + self.cell_size_y + self.cell_size_y * y,
+            self._x1 + self._cell_size_x + self._cell_size_x * x,
+            self._y1 + self._cell_size_y + self._cell_size_y * y,
         )
-        cell: Cell = self.cells[x][y]
+        cell: Cell = self._cells[x][y]
         cell.draw(p1, p2)
-        self.animate()
+        self._animate()
 
-    def animate(self):
-        if self.win:
-            self.win.redraw()
+    def _animate(self):
+        if self._win:
+            self._win.redraw()
 
-    def break_entrance_and_exit(self):
-        self.cells[0][0].has_top_wall = False
-        self.draw_cell(0, 0)
-        self.cells[-1][-1].has_bottom_wall = False
-        self.draw_cell(self.num_cols - 1, self.num_rows - 1)
+    def _break_entrance_and_exit(self):
+        self._cells[0][0].has_top_wall = False
+        self._draw_cell(0, 0)
+        self._cells[-1][-1].has_bottom_wall = False
+        self._draw_cell(self._num_cols - 1, self._num_rows - 1)
 
-    def break_walls_r(self, x: int, y: int):
-        current_cell = self.cells[x][y]
+    def _break_walls_r(self, x: int, y: int):
+        current_cell = self._cells[x][y]
         current_cell.visited = True
         while True:
             to_be_visited: list[tuple[int]] = []
             for i in range(x - 1, x + 2):
                 if i < 0:
                     continue
-                if i > self.num_cols - 1:
+                if i > self._num_cols - 1:
                     continue
                 if i == x:
                     continue
-                if self.cells[i][y].visited == True:
+                if self._cells[i][y].visited == True:
                     continue
                 else:
                     to_be_visited.append((i, y))
             for j in range(y - 1, y + 2):
                 if j < 0:
                     continue
-                if j > self.num_rows - 1:
+                if j > self._num_rows - 1:
                     continue
                 if j == y:
                     continue
-                if self.cells[x][j].visited == True:
+                if self._cells[x][j].visited == True:
                     continue
                 else:
                     to_be_visited.append((x, j))
             if len(to_be_visited) == 0:
-                self.draw_cell(x, y)
+                self._draw_cell(x, y)
                 time.sleep(0.05)
                 return
             else:
@@ -96,7 +97,7 @@ class Maze:
                     random.randint(0, len(to_be_visited) - 1)
                 ]
                 to_be_visited.clear()
-                next_cell = self.cells[destination[0]][destination[1]]
+                next_cell = self._cells[destination[0]][destination[1]]
                 if destination[0] > x:
                     current_cell.has_right_wall = False
                     next_cell.has_left_wall = False
@@ -109,9 +110,9 @@ class Maze:
                 elif destination[1] < y:
                     current_cell.has_top_wall = False
                     next_cell.has_bottom_wall = False
-                self.break_walls_r(destination[0], destination[1])
+                self._break_walls_r(destination[0], destination[1])
 
-    def reset_cells_visited(self):
-        for col in self.cells:
+    def _reset_cells_visited(self):
+        for col in self._cells:
             for cell in col:
                 cell.visited = False
