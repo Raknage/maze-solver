@@ -25,8 +25,10 @@ class Maze:
         self.cells: list[list[Cell]] = []
         random.seed(seed)
         self.create_cells()
-        self.break_entrance_and_exit()
-        self.break_walls_r(0, 0)
+        if self.win:
+            self.break_entrance_and_exit()
+            self.break_walls_r(0, 0)
+            self.reset_cells_visited()
 
     def create_cells(self):
         for x in range(self.num_cols):
@@ -108,3 +110,8 @@ class Maze:
                     current_cell.has_top_wall = False
                     next_cell.has_bottom_wall = False
                 self.break_walls_r(destination[0], destination[1])
+
+    def reset_cells_visited(self):
+        for col in self.cells:
+            for cell in col:
+                cell.visited = False
