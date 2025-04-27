@@ -7,7 +7,8 @@ def main():
     cell_size = (20, 20)
     win = Window(800, 600)
     max_size = win.count_max_size(*start, *cell_size)
-    Maze(*start, *max_size, *cell_size, win)
+    maze = Maze(*start, *max_size, *cell_size, win)
+    maze.solve()
     win.wait_for_close()
 
 

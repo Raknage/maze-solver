@@ -48,6 +48,6 @@ class Cell:
     def draw_move(self, to_cell: Cell, undo=False):
         color = "red"
         if undo:
-            color = "gray"
+            color = "yellow"
         line = Line(self._center, to_cell._center)
         self.window.draw_line(line, color)

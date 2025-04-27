@@ -90,7 +90,7 @@ class Maze:
                     to_be_visited.append((x, j))
             if len(to_be_visited) == 0:
                 self._draw_cell(x, y)
-                time.sleep(0.05)
+                # time.sleep(0.05)
                 return
             else:
                 destination: tuple[int] = to_be_visited[
@@ -116,3 +116,42 @@ class Maze:
         for col in self._cells:
             for cell in col:
                 cell.visited = False
+
+    def solve(self) -> bool:
+        return self._solve_r(0, 0)
+
+    def _solve_r(self, x: int, y: int) -> bool:
+        self._win.redraw()
+        cell = self._cells[x][y]
+        cell.visited = True
+        if x == self._num_cols - 1 and y == self._num_rows - 1:
+            return True
+        for i in range(x - 1, x + 2, 2):
+            if i < 0 or i > self._num_cols - 1:
+                continue
+            destination_cell = self._cells[i][y]
+            if destination_cell.visited == True:
+                continue
+            if (i < x and not cell.has_left_wall) or (
+                i > x and not cell.has_right_wall
+            ):
+                cell.draw_move(destination_cell)
+                if self._solve_r(i, y):
+                    return True
+                else:
+                    cell.draw_move(destination_cell, True)
+        for j in range(y - 1, y + 2, 2):
+            if j < 0 or j > self._num_rows - 1:
+                continue
+            destination_cell = self._cells[x][j]
+            if destination_cell.visited == True:
+                continue
+            if (j < y and not cell.has_top_wall) or (
+                j > y and not cell.has_bottom_wall
+            ):
+                cell.draw_move(destination_cell)
+                if self._solve_r(x, j):
+                    return True
+                else:
+                    cell.draw_move(destination_cell, True)
+        return False
